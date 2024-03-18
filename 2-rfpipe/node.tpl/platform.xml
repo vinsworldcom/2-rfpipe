@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE platform SYSTEM "file:///usr/share/emane/dtd/platform.dtd">
+<platform>
+  <param name="otamanagerchannelenable" value="on"/>
+  <param name="otamanagerdevice" value="${emaneservicedevice}"/>
+  <param name="otamanagergroup" value="224.1.2.8:45702"/>
+  <param name="eventservicegroup" value="224.1.2.8:45703"/>
+  <param name="eventservicedevice" value="${emaneservicedevice}"/>
+  <param name="controlportendpoint" value="0.0.0.0:47000"/>
+
+  <nem id="${etce_index}" definition="rfpipenem.xml">
+    <transport definition="rfpipetrans.xml">
+      <param name="address" value="10.100.0.${etce_index}"/>
+      <param name="mask" value="255.255.255.0"/>
+    </transport>
+    <mac definition="rfpipemac.xml">
+    </mac>
+    <phy definition="rfpipephy.xml">
+	  <param name="subid" value="1"/>
+    </phy>
+  </nem>
+</platform>

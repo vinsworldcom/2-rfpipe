@@ -1,0 +1,42 @@
+<test>
+  <name>2-rfpipe</name>
+
+  <description>
+2-node with RFPipe model.
+
+Start with:
+
+  start_demo.sh root 2-rfpipe/ --runtostep run --policy autoadd
+
+Once the scenario is started, use the following command to see when 
+positions are injected as the first events.  You may need to run the command
+multiple times until the positions populate (typically 30 seconds after the
+`start_demo.sh ...` command finishes):
+
+  emanesh node-1 get table 1 phy LocationEventInfoTable
+
+Connect to node-1 and start a ping to node-2 over the RF-Pipe emulated link:
+
+  ssh node-1
+  ping 10.100.0.2
+
+When finished, exit from the node-1 SSH session to the prompt.
+
+  stop_demo.sh
+
+Log files are stored in /tmp/etce/data/etcedemo-2-rfpipe-YYYYMMDDThhmmss/data.
+Cleanup the log files after inspection:
+
+  rm -rf /tmp/etce
+
+  </description>
+
+  <overlays>
+    <overlay name="emaneservicedevice" value="eth1"/>
+  </overlays>
+
+  <templates indices="1-2">
+    <directory name="node" hostname_format="node-${'%d' % etce_index}">
+    </directory>
+  </templates>
+</test>

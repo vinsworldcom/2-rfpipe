@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lxcplan>
+  <containertemplates>
+    <containertemplate name="node">
+      <parameters>
+        <parameter name="lxc.tty" value="1"/>
+        <parameter name="lxc.pts" value="128"/>
+        <parameter name="lxc.console" value="none"/>
+        <parameter name="lxc.mount.auto" value="proc sys"/>
+      </parameters>
+      <interfaces>
+        <interface bridge="emanenode0" hosts_entry_ipv4="${lxc_name}">
+          <parameter name="lxc.network.type" value="veth"/>
+          <parameter name="lxc.network.name" value="eth1"/>
+          <parameter name="lxc.network.flags" value="up"/>
+          <parameter name="lxc.network.hwaddr" value="02:00:${'%02x' % lxc_index}:01:00:${'%02x' % lxc_index}"/>
+          <parameter name="lxc.network.ipv4" value="10.99.0.${lxc_index}/24"/>
+          <parameter name="lxc.network.veth.pair" value="veth.${lxc_index}.1"/>
+        </interface>
+      </interfaces>
+      <initscript>#!/bin/bash
+
+# make node for tun device
+mkdir /dev/net
+mknod /dev/net/tun c 10 200
+
+pidfile="${lxc_directory}/var/run/sshd.pid"
+/usr/sbin/sshd -o "PidFile=$pidfile" -o "PermitRootLogin=yes" -o "PasswordAuthentication=no"
+      </initscript>
+    </containertemplate>
+  </containertemplates>
+  <hosts>
+    <host hostname="localhost">
+      <kernelparameters>
+        <parameter name="kernel.sched_rt_runtime_us" value="-1"/>
+      </kernelparameters>
+      <bridges>
+        <bridge name="emanenode0">
+          <ipaddress>
+            <ipv4>10.99.0.250/24</ipv4>
+          </ipaddress>
+        </bridge>
+      </bridges>
+      <containers>
+        <container lxc_name="helper" lxc_indices="254" template="node"/>
+        <container lxc_name="node-${'%d' % lxc_index}" lxc_indices="1-2" template="node"/>
+      </containers>
+    </host>
+  </hosts>
+</lxcplan>

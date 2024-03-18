@@ -1,0 +1,16 @@
+<steps>
+  <step name="emane.start">
+    <run wrapper="emane.emane"/>
+  </step>
+  <step name="routing.start">
+    <run wrapper="utils.olsrd"/>
+  </step>
+  <step name="run">
+    <run wrapper="emane.emaneeventd"/>
+    <run wrapper="emane.emaneeventservice"/>
+    <run wrapper="utils.gpsd"/>
+  </step>
+  <step name="stats.snapshot">
+    <run wrapper="emane.emaneshsnapshot"/>
+  </step>
+</steps>
